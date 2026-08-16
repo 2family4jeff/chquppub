@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDO File Updater</title>
+    <title>Cheque Draft Generator</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -23,26 +23,10 @@
             max-width: 500px;
             width: 100%;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-            font-size: 14px;
-        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; font-size: 14px; }
         input {
             width: 100%;
             padding: 12px;
@@ -57,25 +41,10 @@
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        input.error {
-            border-color: #d32f2f;
-            background-color: #ffebee;
-        }
-        .format-hint {
-            display: block;
-            font-size: 12px;
-            color: #999;
-            margin-top: 6px;
-        }
-        .error-message {
-            color: #d32f2f;
-            font-size: 12px;
-            margin-top: 6px;
-            display: none;
-        }
-        .error-message.show {
-            display: block;
-        }
+        input.error { border-color: #d32f2f; background-color: #ffebee; }
+        .format-hint { display: block; font-size: 12px; color: #999; margin-top: 6px; }
+        .error-message { color: #d32f2f; font-size: 12px; margin-top: 6px; display: none; }
+        .error-message.show { display: block; }
         .preview-box {
             background: #f5f5f5;
             padding: 16px;
@@ -87,12 +56,7 @@
             font-style: italic;
             margin-top: 8px;
         }
-        .preview-box.filled {
-            background: #fffbf0;
-            border-left: 4px solid #667eea;
-            color: #333;
-            font-style: normal;
-        }
+        .preview-box.filled { background: #fffbf0; border-left: 4px solid #667eea; color: #333; font-style: normal; }
         button {
             width: 100%;
             padding: 14px;
@@ -106,96 +70,43 @@
             transition: all 0.3s;
             margin-top: 10px;
         }
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            margin-right: 8px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .success-message {
-            display: none;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            color: #2e7d32;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .success-message.show {
-            display: block;
-        }
-        .download-btn {
-            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-            display: none;
-        }
-        .download-btn.show {
-            display: block;
-        }
-        .form-section {
-            display: block;
-        }
-        .form-section.hidden {
-            display: none;
-        }
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .spinner { display: inline-block; width: 14px; height: 14px; margin-right: 8px; border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .form-section { display: block; }
+        .form-section.hidden { display: none; }
+        .success-section { display: none; text-align: center; }
+        .success-section.show { display: block; }
+        .success-icon { font-size: 48px; margin-bottom: 16px; }
+        .success-text { color: #2e7d32; margin-bottom: 20px; }
+        .success-text h2 { margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📄 SDO File Updater</h1>
-        <p class="subtitle">Update fields in your .sdo document with ease</p>
+        <h1>🏦 Cheque Draft Generator</h1>
+        <p class="subtitle">Fill in the fields to generate your .ods file</p>
 
         <div id="formSection" class="form-section">
-            <form id="updateForm">
+            <form id="chequeForm">
+                <div class="form-group">
+                    <label for="payee">Payee Name (FIELD1)</label>
+                    <input type="text" id="payee" placeholder="Jane Doe" required>
+                    <span class="format-hint">Format: First Last</span>
+                    <p class="error-message" id="payeeError"></p>
+                </div>
+
                 <div class="form-group">
                     <label for="date">Date (FIELD2)</label>
-                    <input 
-                        type="text" 
-                        id="date" 
-                        name="date" 
-                        placeholder="15-Mar-2026"
-                        required
-                    >
-                    <span class="format-hint">Format: DD-MMM-YYYY (e.g., 15-Mar-2026)</span>
+                    <input type="text" id="date" placeholder="15-Mar-2026" required>
+                    <span class="format-hint">Format: DD-MMM-YYYY</span>
                     <p class="error-message" id="dateError"></p>
                 </div>
 
                 <div class="form-group">
-                    <label for="name">Payee Name (FIELD1)</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        placeholder="Jane Doe"
-                        required
-                    >
-                    <span class="format-hint">Format: First Last (e.g., Jane Doe)</span>
-                    <p class="error-message" id="nameError"></p>
-                </div>
-
-                <div class="form-group">
                     <label for="amount">Amount (FIELD3)</label>
-                    <input 
-                        type="text" 
-                        id="amount" 
-                        name="amount" 
-                        placeholder="8000.00"
-                        required
-                    >
+                    <input type="text" id="amount" placeholder="8000.00" required>
                     <span class="format-hint">Numeric value (e.g., 8000.00)</span>
                     <p class="error-message" id="amountError"></p>
                 </div>
@@ -207,18 +118,19 @@
 
                 <button type="submit" id="submitBtn">
                     <span class="spinner" id="spinner" style="display: none;"></span>
-                    <span id="btnText">Update File</span>
+                    <span id="btnText">Generate & Download .ods</span>
                 </button>
             </form>
         </div>
 
-        <div id="successSection" class="success-message">
-            <h2>✅ Success!</h2>
-            <p>Your file has been updated and is ready to download.</p>
+        <div id="successSection" class="success-section">
+            <div class="success-icon">✅</div>
+            <div class="success-text">
+                <h2>Success!</h2>
+                <p>Your cheque file is ready.</p>
+            </div>
+            <button onclick="location.reload()">Create Another Cheque</button>
         </div>
-
-        <button id="downloadBtn" class="download-btn">⬇ Download Updated File</button>
-        <button onclick="location.reload()" style="background: #f5f5f5; color: #333; border: 1px solid #ddd;">Update Another File</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -245,7 +157,7 @@
             return true;
         }
 
-        function validateName(n) {
+        function validatePayee(n) {
             return n.trim().split(/\s+/).length >= 2;
         }
 
@@ -308,18 +220,15 @@
             errorEl.classList.remove('show');
         }
 
+        const payeeInput = document.getElementById('payee');
         const dateInput = document.getElementById('date');
-        const nameInput = document.getElementById('name');
         const amountInput = document.getElementById('amount');
         const writtenPreview = document.getElementById('writtenPreview');
         const submitBtn = document.getElementById('submitBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
         const spinner = document.getElementById('spinner');
         const btnText = document.getElementById('btnText');
-        const successSection = document.getElementById('successSection');
         const formSection = document.getElementById('formSection');
-
-        let generatedBlob = null;
+        const successSection = document.getElementById('successSection');
 
         amountInput.addEventListener('input', () => {
             if (validateAmount(amountInput.value)) {
@@ -333,30 +242,30 @@
             }
         });
 
-        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+        document.getElementById('chequeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const payeeError = document.getElementById('payeeError');
             const dateError = document.getElementById('dateError');
-            const nameError = document.getElementById('nameError');
             const amountError = document.getElementById('amountError');
             let isValid = true;
 
+            if (!validatePayee(payeeInput.value)) {
+                showError(payeeInput, payeeError, '❌ Enter first and last name');
+                isValid = false;
+            } else {
+                clearError(payeeInput, payeeError);
+            }
+
             if (!validateDate(dateInput.value)) {
-                showError(dateInput, dateError, '❌ Use DD-MMM-YYYY format (e.g., 15-Mar-2026)');
+                showError(dateInput, dateError, '❌ Use DD-MMM-YYYY format');
                 isValid = false;
             } else {
                 clearError(dateInput, dateError);
             }
 
-            if (!validateName(nameInput.value)) {
-                showError(nameInput, nameError, '❌ Enter name in "First Last" format');
-                isValid = false;
-            } else {
-                clearError(nameInput, nameError);
-            }
-
             if (!validateAmount(amountInput.value)) {
-                showError(amountInput, amountError, '❌ Enter a valid numeric amount');
+                showError(amountInput, amountError, '❌ Enter a valid amount');
                 isValid = false;
             } else {
                 clearError(amountInput, amountError);
@@ -380,40 +289,38 @@
 
                 let contentXml = await zip.file('content.xml').async('string');
 
-                const escapedName = escapeXml(nameInput.value);
+                const escapedPayee = escapeXml(payeeInput.value);
                 const escapedDate = escapeXml(dateInput.value);
                 const escapedAmount = escapeXml(amountInput.value.replace(/,/g, ''));
                 const escapedWritten = escapeXml(writtenPreview.textContent);
 
-                contentXml = contentXml.split('** FIELD1 **').join(escapedName);
+                contentXml = contentXml.split('** FIELD1 **').join(escapedPayee);
                 contentXml = contentXml.split('>FIELD2<').join('>' + escapedDate + '<');
                 contentXml = contentXml.split('$ FIELD3 <text:s/>**').join('$' + escapedAmount + ' **');
                 contentXml = contentXml.split('** FIELD4 **').join(escapedWritten);
 
                 zip.file('content.xml', contentXml);
 
-                generatedBlob = await zip.generateAsync({ type: 'blob' });
+                const blob = await zip.generateAsync({ type: 'blob' });
 
+                // Trigger download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cheque-' + payeeInput.value.replace(/\s+/g, '-').toLowerCase() + '.ods';
+                a.click();
+                URL.revokeObjectURL(url);
+
+                // Show success message
                 formSection.classList.add('hidden');
                 successSection.classList.add('show');
-                downloadBtn.classList.add('show');
             } catch (error) {
                 alert('Error: ' + error.message);
+                console.error(error);
             } finally {
                 submitBtn.disabled = false;
                 spinner.style.display = 'none';
-                btnText.textContent = 'Update File';
-            }
-        });
-
-        downloadBtn.addEventListener('click', () => {
-            if (generatedBlob) {
-                const url = URL.createObjectURL(generatedBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Cory_6Aug2026_updated.sdo';
-                a.click();
-                URL.revokeObjectURL(url);
+                btnText.textContent = 'Generate & Download .ods';
             }
         });
     </script>
