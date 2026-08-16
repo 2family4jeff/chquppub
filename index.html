@@ -1,347 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cheque Draft Updater</title>
-<style>
-* { box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 1rem;
-}
-.container {
-  max-width: 600px;
-  width: 100%;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-}
-.header { text-align: center; margin-bottom: 2rem; }
-.icon { font-size: 3rem; margin-bottom: 1rem; }
-h1 { margin: 0; color: #333; }
-.subtitle { color: #666; margin-top: 0.5rem; }
-.form-group { margin-bottom: 1.5rem; }
-label { display: block; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
-input {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: border-color 0.3s;
-}
-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-input:disabled { background: #f5f5f5; cursor: not-allowed; }
-.hint { font-size: 0.85rem; color: #999; margin-top: 0.25rem; }
-.preview-box {
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-  font-style: italic;
-  color: #999;
-}
-.preview-box.filled {
-  font-style: normal;
-  color: #333;
-  background: #fffbf0;
-  border-left: 4px solid #667eea;
-}
-.error {
-  color: #d32f2f;
-  padding: 0.75rem;
-  background: #ffebee;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-button {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-}
-.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-.success-box {
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-.success-icon { font-size: 3rem; margin-bottom: 1rem; }
-.success-box h2 { margin: 1rem 0; color: #2e7d32; }
-.success-box p { color: #388e3c; margin: 0.5rem 0; }
-.button-group { display: flex; gap: 1rem; }
-.button-group button { flex: 1; }
-.btn-secondary { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
-.btn-secondary:hover { background: #e0e0e0; }
-.loading { opacity: 0.6; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDO File Updater</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        input.error {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+        .format-hint {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .preview-box {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 6px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            color: #999;
+            font-style: italic;
+            margin-top: 8px;
+        }
+        .preview-box.filled {
+            background: #fffbf0;
+            border-left: 4px solid #667eea;
+            color: #333;
+            font-style: normal;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .success-message.show {
+            display: block;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            display: none;
+        }
+        .download-btn.show {
+            display: block;
+        }
+        .form-section {
+            display: block;
+        }
+        .form-section.hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="icon">🏦</div>
-    <h1>Cheque Draft Updater</h1>
-    <p class="subtitle">Fill in the fields below — the written amount is auto-generated</p>
-  </div>
+    <div class="container">
+        <h1>📄 SDO File Updater</h1>
+        <p class="subtitle">Update fields in your .sdo document with ease</p>
 
-  <div id="formView">
-    <div class="form-group">
-      <label for="payee">FIELD 1: Payee Name</label>
-      <input type="text" id="payee" placeholder="Format: First Last · e.g. Jane Smith">
-      <div class="hint">Please enter a name in "First Last" format.</div>
+        <div id="formSection" class="form-section">
+            <form id="updateForm">
+                <div class="form-group">
+                    <label for="date">Date (FIELD2)</label>
+                    <input 
+                        type="text" 
+                        id="date" 
+                        name="date" 
+                        placeholder="15-Mar-2026"
+                        required
+                    >
+                    <span class="format-hint">Format: DD-MMM-YYYY (e.g., 15-Mar-2026)</span>
+                    <p class="error-message" id="dateError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Payee Name (FIELD1)</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Jane Doe"
+                        required
+                    >
+                    <span class="format-hint">Format: First Last (e.g., Jane Doe)</span>
+                    <p class="error-message" id="nameError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (FIELD3)</label>
+                    <input 
+                        type="text" 
+                        id="amount" 
+                        name="amount" 
+                        placeholder="8000.00"
+                        required
+                    >
+                    <span class="format-hint">Numeric value (e.g., 8000.00)</span>
+                    <p class="error-message" id="amountError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Written Amount (FIELD4)</label>
+                    <div class="preview-box" id="writtenPreview">Enter an amount to preview...</div>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <span class="spinner" id="spinner" style="display: none;"></span>
+                    <span id="btnText">Update File</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="successSection" class="success-message">
+            <h2>✅ Success!</h2>
+            <p>Your file has been updated and is ready to download.</p>
+        </div>
+
+        <button id="downloadBtn" class="download-btn">⬇ Download Updated File</button>
+        <button onclick="location.reload()" style="background: #f5f5f5; color: #333; border: 1px solid #ddd;">Update Another File</button>
     </div>
 
-    <div class="form-group">
-      <label for="date">FIELD 2: Date</label>
-      <input type="text" id="date" placeholder="Format: DD-MMM-YYYY · e.g. 06-Aug-2026">
-      <div class="hint">Please enter a valid date in DD-MMM-YYYY format.</div>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const TEMPLATE_B64 = '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';
 
-    <div class="form-group">
-      <label for="amount">FIELD 3: Amount</label>
-      <input type="text" id="amount" placeholder="Numeric value · e.g. 8523.45 or 8,523.45">
-      <div class="hint">Please enter a valid positive amount (up to 999,999,999.99).</div>
-    </div>
+        function escapeXml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
 
-    <div class="form-group">
-      <label>FIELD 4: Written Amount</label>
-      <div class="preview-box" id="writtenAmountPreview">Enter an amount above to preview…</div>
-      <div class="hint">Bank cheque format · auto-filled from FIELD 3</div>
-    </div>
+        const validMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
-    <div id="errorBox" class="error" style="display: none;"></div>
+        function validateDate(d) {
+            const p = d.split('-');
+            if (p.length !== 3) return false;
+            if (p[0].length !== 2 || !/^\d{2}$/.test(p[0])) return false;
+            if (p[1].length !== 3 || !validMonths.includes(p[1].toLowerCase())) return false;
+            if (p[2].length !== 4 || !/^\d{4}$/.test(p[2])) return false;
+            return true;
+        }
 
-    <button class="btn-primary" id="generateBtn">Generate & Download</button>
-  </div>
+        function validateName(n) {
+            return n.trim().split(/\s+/).length >= 2;
+        }
 
-  <div id="successView" style="display: none;">
-    <div class="success-box">
-      <div class="success-icon">✅</div>
-      <h2>File Ready!</h2>
-      <p>Your cheque draft has been updated and is ready to download.</p>
-    </div>
-    <div class="button-group">
-      <button class="btn-primary" id="downloadBtn">⬇ Download Updated File</button>
-      <button class="btn-secondary" id="resetBtn">Update Another Cheque</button>
-    </div>
-  </div>
-</div>
+        function validateAmount(a) {
+            const num = parseFloat(a.replace(/,/g, ''));
+            return !isNaN(num) && num > 0 && num < 1000000000;
+        }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script>
-const TEMPLATE_B64 = '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';
+        function numberToWords(num) {
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+            const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            const scales = ['', 'Thousand', 'Million', 'Billion'];
 
-function escapeXml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
+            const convertGroup = (n) => {
+                let result = '';
+                const h = Math.floor(n / 100);
+                const t = Math.floor((n % 100) / 10);
+                const o = n % 10;
+                if (h > 0) result += ones[h] + ' Hundred ';
+                if (t >= 2) result += tens[t] + (o > 0 ? ' ' + ones[o] : '');
+                else if (t === 1) result += teens[o];
+                else if (o > 0) result += ones[o];
+                return result.trim();
+            };
 
-const validMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            const intPart = Math.floor(num);
+            const intStr = intPart.toString().padStart(1, '0');
+            const groups = [];
+            for (let i = intStr.length; i > 0; i -= 3) {
+                groups.unshift(intStr.slice(Math.max(0, i - 3), i));
+            }
 
-function validateDate(d) {
-  const p = d.split('-');
-  if (p.length !== 3) return false;
-  if (p[0].length !== 2 || !/^\d{2}$/.test(p[0])) return false;
-  if (p[1].length !== 3 || !validMonths.includes(p[1].toLowerCase())) return false;
-  if (p[2].length !== 4 || !/^\d{4}$/.test(p[2])) return false;
-  return true;
-}
+            let words = groups
+                .map((group, idx) => {
+                    const groupNum = parseInt(group);
+                    if (groupNum === 0) return '';
+                    return convertGroup(groupNum) + (scales[groups.length - idx - 1] ? ' ' + scales[groups.length - idx - 1] : '');
+                })
+                .filter(Boolean)
+                .join(' ');
 
-function validatePayee(p) {
-  return p.trim().split(' ').length >= 2;
-}
+            const cents = Math.round((num % 1) * 100);
+            if (cents > 0) {
+                words += ' Dollars And ' + convertGroup(cents) + ' Cents';
+            } else {
+                words += ' Dollars';
+            }
+            return words;
+        }
 
-function validateAmount(a) {
-  const num = parseFloat(a.replace(/,/g, ''));
-  return !isNaN(num) && num > 0 && num < 1000000000;
-}
+        function showError(input, errorEl, message) {
+            input.classList.add('error');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
 
-const numberToWords = (num) => {
-  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-  const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-  const scales = ['', 'Thousand', 'Million', 'Billion'];
+        function clearError(input, errorEl) {
+            input.classList.remove('error');
+            errorEl.classList.remove('show');
+        }
 
-  const convertGroup = (n) => {
-    let result = '';
-    const h = Math.floor(n / 100);
-    const t = Math.floor((n % 100) / 10);
-    const o = n % 10;
+        const dateInput = document.getElementById('date');
+        const nameInput = document.getElementById('name');
+        const amountInput = document.getElementById('amount');
+        const writtenPreview = document.getElementById('writtenPreview');
+        const submitBtn = document.getElementById('submitBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+        const successSection = document.getElementById('successSection');
+        const formSection = document.getElementById('formSection');
 
-    if (h > 0) result += ones[h] + ' Hundred ';
-    if (t >= 2) result += tens[t] + (o > 0 ? ' ' + ones[o] : '');
-    else if (t === 1) result += teens[o];
-    else if (o > 0) result += ones[o];
+        let generatedBlob = null;
 
-    return result.trim();
-  };
+        amountInput.addEventListener('input', () => {
+            if (validateAmount(amountInput.value)) {
+                const num = parseFloat(amountInput.value.replace(/,/g, ''));
+                const written = numberToWords(num);
+                writtenPreview.textContent = written;
+                writtenPreview.classList.add('filled');
+            } else {
+                writtenPreview.textContent = 'Enter an amount to preview...';
+                writtenPreview.classList.remove('filled');
+            }
+        });
 
-  const intPart = Math.floor(num);
-  const intStr = intPart.toString().padStart(1, '0');
-  const groups = [];
-  for (let i = intStr.length; i > 0; i -= 3) {
-    groups.unshift(intStr.slice(Math.max(0, i - 3), i));
-  }
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-  let words = groups
-    .map((group, idx) => {
-      const groupNum = parseInt(group);
-      if (groupNum === 0) return '';
-      return convertGroup(groupNum) + (scales[groups.length - idx - 1] ? ' ' + scales[groups.length - idx - 1] : '');
-    })
-    .filter(Boolean)
-    .join(' ');
+            const dateError = document.getElementById('dateError');
+            const nameError = document.getElementById('nameError');
+            const amountError = document.getElementById('amountError');
+            let isValid = true;
 
-  const cents = Math.round((num % 1) * 100);
-  if (cents > 0) {
-    words += ' Dollars And ' + convertGroup(cents) + ' Cents';
-  } else {
-    words += ' Dollars';
-  }
+            if (!validateDate(dateInput.value)) {
+                showError(dateInput, dateError, '❌ Use DD-MMM-YYYY format (e.g., 15-Mar-2026)');
+                isValid = false;
+            } else {
+                clearError(dateInput, dateError);
+            }
 
-  return words;
-};
+            if (!validateName(nameInput.value)) {
+                showError(nameInput, nameError, '❌ Enter name in "First Last" format');
+                isValid = false;
+            } else {
+                clearError(nameInput, nameError);
+            }
 
-const payeeInput = document.getElementById('payee');
-const dateInput = document.getElementById('date');
-const amountInput = document.getElementById('amount');
-const writtenAmountPreview = document.getElementById('writtenAmountPreview');
-const generateBtn = document.getElementById('generateBtn');
-const errorBox = document.getElementById('errorBox');
-const formView = document.getElementById('formView');
-const successView = document.getElementById('successView');
-const downloadBtn = document.getElementById('downloadBtn');
-const resetBtn = document.getElementById('resetBtn');
+            if (!validateAmount(amountInput.value)) {
+                showError(amountInput, amountError, '❌ Enter a valid numeric amount');
+                isValid = false;
+            } else {
+                clearError(amountInput, amountError);
+            }
 
-let generatedBlob = null;
+            if (!isValid) return;
 
-amountInput.addEventListener('input', () => {
-  if (validateAmount(amountInput.value)) {
-    const num = parseFloat(amountInput.value.replace(/,/g, ''));
-    const written = numberToWords(num);
-    writtenAmountPreview.textContent = written;
-    writtenAmountPreview.classList.add('filled');
-  } else {
-    writtenAmountPreview.textContent = 'Enter an amount above to preview…';
-    writtenAmountPreview.classList.remove('filled');
-  }
-});
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Processing...';
 
-generateBtn.addEventListener('click', async () => {
-  errorBox.style.display = 'none';
-  errorBox.textContent = '';
+            try {
+                const binaryString = atob(TEMPLATE_B64);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
 
-  if (!validatePayee(payeeInput.value)) {
-    errorBox.textContent = 'Payee: Enter first and last name';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if (!validateDate(dateInput.value)) {
-    errorBox.textContent = 'Date: Use DD-MMM-YYYY format with valid month (e.g. 06-Aug-2026)';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if (!validateAmount(amountInput.value)) {
-    errorBox.textContent = 'Amount: Enter a valid positive number';
-    errorBox.style.display = 'block';
-    return;
-  }
+                const zip = new JSZip();
+                await zip.loadAsync(bytes);
 
-  generateBtn.disabled = true;
-  generateBtn.classList.add('loading');
-  generateBtn.textContent = 'Processing...';
+                let contentXml = await zip.file('content.xml').async('string');
 
-  try {
-    const binaryString = atob(TEMPLATE_B64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
+                const escapedName = escapeXml(nameInput.value);
+                const escapedDate = escapeXml(dateInput.value);
+                const escapedAmount = escapeXml(amountInput.value.replace(/,/g, ''));
+                const escapedWritten = escapeXml(writtenPreview.textContent);
 
-    const zip = new JSZip();
-    await zip.loadAsync(bytes);
+                contentXml = contentXml.split('** FIELD1 **').join(escapedName);
+                contentXml = contentXml.split('>FIELD2<').join('>' + escapedDate + '<');
+                contentXml = contentXml.split('$ FIELD3 <text:s/>**').join('$' + escapedAmount + ' **');
+                contentXml = contentXml.split('** FIELD4 **').join(escapedWritten);
 
-    let contentXml = await zip.file('content.xml').async('string');
+                zip.file('content.xml', contentXml);
 
-    const escapedPayee = escapeXml(payeeInput.value);
-    const escapedDate = escapeXml(dateInput.value);
-    const escapedAmount = escapeXml(amountInput.value.replace(/,/g, ''));
-    const escapedWritten = escapeXml(writtenAmountPreview.textContent);
+                generatedBlob = await zip.generateAsync({ type: 'blob' });
 
-    contentXml = contentXml.split('** FIELD1 **').join(escapedPayee);
-    contentXml = contentXml.split('>FIELD2<').join('>' + escapedDate + '<');
-    contentXml = contentXml.split('$ FIELD3 <text:s/>**').join('$' + escapedAmount + ' **');
-    contentXml = contentXml.split('** FIELD4 **').join(escapedWritten);
+                formSection.classList.add('hidden');
+                successSection.classList.add('show');
+                downloadBtn.classList.add('show');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Update File';
+            }
+        });
 
-    zip.file('content.xml', contentXml);
-
-    generatedBlob = await zip.generateAsync({ type: 'blob' });
-
-    formView.style.display = 'none';
-    successView.style.display = 'block';
-  } catch (err) {
-    errorBox.textContent = 'Error: ' + err.message;
-    errorBox.style.display = 'block';
-    console.error(err);
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.classList.remove('loading');
-    generateBtn.textContent = 'Generate & Download';
-  }
-});
-
-downloadBtn.addEventListener('click', () => {
-  if (generatedBlob) {
-    const url = URL.createObjectURL(generatedBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cheque-' + payeeInput.value.replace(/\s+/g, '-').toLowerCase() + '.ods';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-});
-
-resetBtn.addEventListener('click', () => {
-  payeeInput.value = '';
-  dateInput.value = '';
-  amountInput.value = '';
-  writtenAmountPreview.textContent = 'Enter an amount above to preview…';
-  writtenAmountPreview.classList.remove('filled');
-  generatedBlob = null;
-  formView.style.display = 'block';
-  successView.style.display = 'none';
-  errorBox.style.display = 'none';
-});
-</script>
+        downloadBtn.addEventListener('click', () => {
+            if (generatedBlob) {
+                const url = URL.createObjectURL(generatedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Cory_6Aug2026_updated.sdo';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+    </script>
 </body>
 </html>
