@@ -1,235 +1,454 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDO Cheque Updater</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-:root {
-  --bg: #f6f7f9; --card: #fff; --text: #111827; --text2: #6b7280;
-  --border: #e5e7eb; --accent: #2563eb; --accent-h: #1d4ed8;
-  --ok: #059669; --ok-bg: #ecfdf5; --err: #dc2626; --err-bg: #fef2f2;
-  --r: 12px; --sh: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.05);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.6;
-  min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-  padding: 3rem 1rem;
-}
-.wrap { width: 100%; max-width: 560px; }
-header { text-align: center; margin-bottom: 2.5rem; }
-header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: .4rem; }
-header p { color: var(--text2); font-size: .95rem; }
-.card {
-  background: var(--card); border-radius: var(--r); box-shadow: var(--sh);
-  border: 1px solid var(--border); padding: 2rem; margin-bottom: 1.5rem;
-}
-.field { margin-bottom: 1.5rem; }
-.field:last-child { margin-bottom: 0; }
-.field label {
-  display: block; font-size: .8rem; font-weight: 600; text-transform: uppercase;
-  letter-spacing: .04em; color: var(--text2); margin-bottom: .4rem;
-}
-.field input[type="text"] {
-  width: 100%; padding: .75rem 1rem; font-size: 1rem; font-family: inherit;
-  border: 1px solid var(--border); border-radius: 8px; background: #fafafa;
-  transition: border-color .2s, box-shadow .2s, background .2s; color: var(--text);
-}
-.field input[type="text"]::placeholder { color: #9ca3af; }
-.field input[type="text"]:focus {
-  outline: none; border-color: var(--accent); background: #fff;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-}
-.hint { font-size: .8rem; color: var(--text2); margin-top: .35rem; display: flex; gap: .35rem; align-items: center; }
-.hint::before { content: "ℹ"; font-size: .75rem; opacity: .6; }
-.preview {
-  padding: .875rem 1rem; background: #f9fafb; border: 1px dashed var(--border);
-  border-radius: 8px; min-height: 3rem; display: flex; align-items: center;
-  font-style: italic; color: #9ca3af; transition: all .2s;
-}
-.preview.filled { font-style: normal; color: var(--text); background: #fffbeb;
-  border-style: solid; border-color: #f59e0b; border-left-width: 4px; }
-.alert { display: none; padding: .875rem 1rem; border-radius: 8px; font-size: .9rem; margin-bottom: 1.25rem; }
-.alert.err { display: flex; background: var(--err-bg); color: var(--err); border: 1px solid #fecaca; }
-.btn { width: 100%; padding: .875rem; font-size: 1rem; font-weight: 600; font-family: inherit;
-  border: none; border-radius: 8px; cursor: pointer; transition: transform .15s, box-shadow .15s, opacity .15s; }
-.btn:active { transform: translateY(1px); }
-.btn-pri { background: var(--accent); color: #fff; }
-.btn-pri:hover:not(:disabled) { background: var(--accent-h); box-shadow: 0 4px 14px rgba(37,99,235,.35); }
-.btn-pri:disabled { opacity: .55; cursor: not-allowed; }
-.btn-sec { background: #fff; color: var(--text); border: 1px solid var(--border); }
-.btn-sec:hover { background: #f9fafb; }
-.ok-card { text-align: center; padding: 2.5rem 2rem; background: var(--ok-bg); border: 1px solid #a7f3d0; }
-.ok-card .icon { font-size: 3rem; margin-bottom: .75rem; }
-.ok-card h2 { font-size: 1.4rem; font-weight: 700; color: var(--ok); margin-bottom: .4rem; }
-.ok-card p { color: #10b981; font-size: .95rem; }
-.actions { display: flex; gap: .75rem; margin-top: 1.25rem; }
-.actions .btn { flex: 1; }
-footer { margin-top: 2rem; text-align: center; font-size: .75rem; color: #9ca3af; }
-@media (max-width: 480px) { body { padding: 1.5rem 1rem; } .card { padding: 1.5rem; } header h1 { font-size: 1.4rem; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDO File Updater</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input.error {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+
+        .format-hint {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #updateForm {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .success-message h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .success-message p {
+            color: #388e3c;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .download-link {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .download-link:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .reset-btn {
+            background: #757575;
+            margin-top: 10px;
+        }
+
+        .reset-btn:hover {
+            background: #616161;
+        }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <header><h1>SDO Cheque Updater</h1><p>Fill in the three fields below — the written amount is generated for you.</p></header>
-  <div id="formView">
-    <div class="card">
-      <div class="field"><label for="payee">FIELD 1 — Payee Name</label><input type="text" id="payee" placeholder="Format: First Last  ·  e.g. Jane Smith" autocomplete="off"><div class="hint">Please enter a name in &quot;First Last&quot; format.</div></div>
-      <div class="field"><label for="date">FIELD 2 — Date</label><input type="text" id="date" placeholder="Format: DD-MMM-YYYY  ·  e.g. 06-Aug-2026" autocomplete="off"><div class="hint">Please enter a valid date in DD-MMM-YYYY format.</div></div>
-      <div class="field"><label for="amount">FIELD 3 — Amount</label><input type="text" id="amount" placeholder="Numeric value  ·  e.g. 8523.45 or 8,523.45" autocomplete="off"><div class="hint">Please enter a valid positive amount (up to 999,999,999.99).</div></div>
-      <div class="field"><label>FIELD 4 — Written Amount <span style="font-weight:400;color:var(--accent);">Auto-Generated</span></label><div class="preview" id="writtenAmountPreview">Enter an amount above to preview…</div><div class="hint">Bank cheque format · auto-filled from FIELD 3</div></div>
+    <div class="container">
+        <h1>📄 SDO File Updater</h1>
+        <p class="subtitle">Update fields in your .sdo document with ease</p>
+
+        <form id="updateForm">
+            <div class="form-group">
+                <label for="date">Date (FIELD1)</label>
+                <input 
+                    type="text" 
+                    id="date" 
+                    name="date" 
+                    placeholder="15-Mar-2026"
+                    required
+                >
+                <span class="format-hint">Format: DD-MMM-YYYY (e.g., 15-Mar-2026)</span>
+                <p class="error-message" id="dateError"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name (FIELD2)</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Jane Doe"
+                    required
+                >
+                <span class="format-hint">Format: First Last (e.g., Jane Doe)</span>
+                <p class="error-message" id="nameError"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount (FIELD3)</label>
+                <input 
+                    type="text" 
+                    id="amount" 
+                    name="amount" 
+                    placeholder="8000.00"
+                    required
+                >
+                <span class="format-hint">Format: Numeric (e.g., 8000.00). Written amount will be auto-generated.</span>
+                <p class="error-message" id="amountError"></p>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Update File</span>
+                <span class="spinner" id="spinner" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <h3>✅ File Updated Successfully!</h3>
+            <p>Your updated file includes: <strong id="generatedAmount"></strong></p>
+            <a href="#" class="download-link" id="downloadLink">Download Updated File</a>
+            <button class="reset-btn" id="resetBtn">Update Another File</button>
+        </div>
     </div>
-    <div id="errorBox" class="alert err"></div>
-    <button class="btn btn-pri" id="generateBtn">Generate &amp; Download</button>
-  </div>
-  <div id="successView" style="display:none;">
-    <div class="card ok-card">
-      <div class="icon">✅</div><h2>File Ready!</h2><p>Your cheque draft has been updated and is ready to download.</p>
-      <div class="actions"><button class="btn btn-pri" id="downloadBtn">⬇ Download</button><button class="btn btn-sec" id="resetBtn">Update Another</button></div>
-    </div>
-  </div>
-  <footer>Runs entirely in your browser. No data is sent to any server.</footer>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script>
-const TEMPLATE_B64 = "UEsDBBQAAAAAAAAAIQCFbDmKLgAAAC4AAAAIAAAAbWltZXR5cGVhcHBsaWNhdGlvbi92bmQub2FzaXMub3BlbmRvY3VtZW50LnNwcmVhZHNoZWV0UEsDBBQAAAAIAKGeEF2u7W8VxgAAAA8CAAAVAAAATUVUQS1JTkYvbWFuaWZlc3QueG1srZFBasQwDEX3cwqjfeJ2V0yc2fUE0wMIW9Mx2LKJlGFy+yaFNi2l0IHupC/p/Q8ajreSzZUmSZU9PPYPYIhDjYlfPbycnrsnOI6HoSCnM4m6j8KsdyyfrYd5YldRkjjGQuI0uNqIYw1zIVb3fd9tTuPBmJ18Tpm6dXNazK7NOXcN9eLBwi4Xigk7XRp5wNZyCqhrfnvl2L9n6L9a99ImwigXIgV7l2morBthDf+LvdJN7Ta+Dyy6ZJL/5xZS/CN1sD+eOr4BUEsDBBQAAAAIAKGeEF2mIhIQGQEAAN8EAAALAAAAY29udGVudC54bWzFVLFOwzAQ3fsVkcdIobQwICtxVVEqITEwgJhd59paSnzBdqD9e5w4aZuIIYJIXWLfvffO96yc48Uhz4Iv0EaiSsjs5pYEoASmUu0S8v62jh7Igk1i3G6lAJqiKHNQNhKorFsDp1aGejQhpVYUuZGGKp6DoVZQLEC1KnrJptVZk6CpYPkmG1ygJvf0cLCD5Y7bqpteLi5gTpjLt4Y3mB6r+JwxhQaemj2A9YCDfEP1N/D76vyEPO7hswTS8rrMSOP3GelhArKMxXWnBXvlRwAaT5vQbfrMQWXCcP389LKaheGgUl2s0+zfbKy4Hc/F/FouljmW7lcay8fdtXx8aGndCI9m5P6/RjpAM3PT34fulPfjeQr7zxP7AVBLAwQUAAAACACgnhBd1ZS7Tn4AAADBAAAACgAAAHN0eWxlcy54bWxtjkEOgkAMRfecoukeUVemYYYdJ9ADkKGYSZjW0MHo7SUiCQt3P/n/5f26eaURnjxZVHF4OhwRWIL2Ue4Ob9e2vGDji1qHIQamXsOcWHJp+T2ywQKL0Vo6nCch7SwaSZfYKAfSB8sG0X5NX9Uv7/xn9AXA5ls11XKg+v/AfwBQSwMEFAAAAAgAoZ4QXVbeHGh8AAAAuwAAAAgAAABtZXRhLnhtbG3NTQrCQAwF4H1PEbKvVVcSOtNdT6AHGKapDDiJNFPx+NafQhfuHrz3+NrumW/w4MmSisPDbo/AEnVIcnV4Off1CTtftTqOKTINGufMUurMJcByFaNv5XCehDRYMpKQ2ahE0jvLeqHtmj7QL2/0I/oKYNXeSLPgzT/dvwBQSwECFAMUAAAAAAAAACEAhWw5ii4AAAAuAAAACAAAAAAAAAAAAAAAgAEAAAAAbWltZXR5cGVQSwECFAMUAAAACACgnhBdru1vFcYAAAAPAgAAFQAAAAAAAAAAAAAAgAFUAAAATUVUQS1JTkYvbWFuaWZlc3QueG1sUEsBAhQDFAAAAAgAoZ4QXaYiEhAZAQAA3wQAAAsAAAAAAAAAAAAAAIABTQEAAGNvbnRlbnQueG1sUEsBAhQDFAAAAAgAoZ4QXdWUu05+AAAAwQAAAAoAAAAAAAAAAAAAAIABjwIAAHN0eWxlcy54bWxQSwECFAMUAAAACACgnhBdVt4caHwAAAC7AAAACAAAAAAAAAAAAAAAgAE1AwAAbWV0YS54bWxQSwUGAAAAAAUABQAgAQAA1wMAAAAA";
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function validateDate(d) {
-  var p = d.split('-');
-  if (p.length !== 3 || p[0].length !== 2 || p[1].length !== 3 || p[2].length !== 4) return false;
-  var day = parseInt(p[0], 10), month = p[1], year = parseInt(p[2], 10);
-  if (MONTHS.indexOf(month) === -1) return false;
-  if (isNaN(day) || day < 1 || day > 31) return false;
-  if (isNaN(year) || year < 1900 || year > 2100) return false;
-  return true;
-}
-function validatePayee(p) { return p.trim().split(/\s+/).length >= 2; }
-function validateAmount(a) {
-  var num = parseFloat(a.replace(/,/g, ''));
-  return !isNaN(num) && num > 0 && num < 1000000000;
-}
-function escapeXml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function numberToWords(num) {
-  var ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'];
-  var teens = ['Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-  var tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-  var scales = ['','Thousand','Million','Billion'];
-  function convertGroup(n) {
-    var r = '', h = Math.floor(n/100), t = Math.floor((n%100)/10), o = n%10;
-    if (h > 0) r += ones[h] + ' Hundred ';
-    if (t >= 2) r += tens[t] + (o > 0 ? ' ' + ones[o] : '');
-    else if (t === 1) r += teens[o];
-    else if (o > 0) r += ones[o];
-    return r.trim();
-  }
-  var intPart = Math.floor(num);
-  var intStr = intPart.toString();
-  var groups = [];
-  for (var i = intStr.length; i > 0; i -= 3) groups.unshift(intStr.slice(Math.max(0, i-3), i));
-  var words = groups.map(function(g, idx) {
-    var gn = parseInt(g, 10);
-    if (gn === 0) return '';
-    return convertGroup(gn) + (scales[groups.length - idx - 1] ? ' ' + scales[groups.length - idx - 1] : '');
-  }).filter(Boolean).join(' ');
-  var cents = Math.round((num % 1) * 100);
-  if (cents > 0) words += (intPart === 1 ? ' Dollar And ' : ' Dollars And ') + convertGroup(cents) + ' Cents';
-  else words += (intPart === 1 ? ' Dollar' : ' Dollars');
-  return words;
-}
 
-var payeeInput = document.getElementById('payee');
-var dateInput = document.getElementById('date');
-var amountInput = document.getElementById('amount');
-var writtenPreview = document.getElementById('writtenAmountPreview');
-var generateBtn = document.getElementById('generateBtn');
-var errorBox = document.getElementById('errorBox');
-var formView = document.getElementById('formView');
-var successView = document.getElementById('successView');
-var downloadBtn = document.getElementById('downloadBtn');
-var resetBtn = document.getElementById('resetBtn');
-var generatedBlob = null, generatedUrl = null;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const TEMPLATE_B64 = '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';
 
-amountInput.addEventListener('input', function() {
-  if (validateAmount(amountInput.value)) {
-    writtenPreview.textContent = numberToWords(parseFloat(amountInput.value.replace(/,/g, '')));
-    writtenPreview.classList.add('filled');
-  } else {
-    writtenPreview.textContent = 'Enter an amount above to preview…';
-    writtenPreview.classList.remove('filled');
-  }
-});
+        const ONES = [
+            "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", 
+            "Seventeen", "Eighteen", "Nineteen"
+        ];
+        const TENS = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
-generateBtn.addEventListener('click', async function() {
-  errorBox.style.display = 'none'; errorBox.textContent = '';
-  if (!validatePayee(payeeInput.value)) { errorBox.textContent = 'Payee: Enter first and last name'; errorBox.style.display = 'flex'; return; }
-  if (!validateDate(dateInput.value)) { errorBox.textContent = 'Date: Use DD-MMM-YYYY format (e.g. 06-Aug-2026)'; errorBox.style.display = 'flex'; return; }
-  if (!validateAmount(amountInput.value)) { errorBox.textContent = 'Amount: Enter a valid positive number'; errorBox.style.display = 'flex'; return; }
+        function numberToWords(n) {
+            if (n === 0) return "Zero";
+            if (n < 20) return ONES[n];
+            if (n < 100) {
+                const q = Math.floor(n / 10);
+                const r = n % 10;
+                return TENS[q] + (r ? "-" + ONES[r] : "");
+            }
+            if (n < 1000) {
+                const q = Math.floor(n / 100);
+                const r = n % 100;
+                return ONES[q] + " Hundred" + (r ? " " + numberToWords(r) : "");
+            }
+            if (n < 1000000) {
+                const q = Math.floor(n / 1000);
+                const r = n % 1000;
+                return numberToWords(q) + " Thousand" + (r ? " " + numberToWords(r) : "");
+            }
+            if (n < 1000000000) {
+                const q = Math.floor(n / 1000000);
+                const r = n % 1000000;
+                return numberToWords(q) + " Million" + (r ? " " + numberToWords(r) : "");
+            }
+            throw new Error("Amount too large");
+        }
 
-  generateBtn.disabled = true; generateBtn.textContent = 'Processing…';
-  try {
-    var binaryString = atob(TEMPLATE_B64);
-    var bytes = new Uint8Array(binaryString.length);
-    for (var i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+        function amountInWords(amount) {
+            const cents = Math.round((amount * 100) % 100);
+            const dollars = Math.floor(amount);
 
-    var zip = new JSZip();
-    await zip.loadAsync(bytes);
+            if (dollars === 0 && cents === 0) {
+                return "Zero Dollars and 0/100";
+            }
 
-    var contentXml = await zip.file('content.xml').async('string');
-    contentXml = contentXml.replace(/FIELD1/g, escapeXml(payeeInput.value.trim()));
-    contentXml = contentXml.replace(/FIELD2/g, escapeXml(dateInput.value.trim()));
-    contentXml = contentXml.replace(/FIELD3/g, escapeXml(amountInput.value.replace(/,/g, '').trim()));
-    contentXml = contentXml.replace(/FIELD4/g, escapeXml(writtenPreview.textContent.trim()));
+            let dollarsWords = "";
+            if (dollars > 0) {
+                dollarsWords = numberToWords(dollars) + " Dollar" + (dollars !== 1 ? "s" : "");
+            }
 
-    // Rebuild with mimetype first + uncompressed (ODS requirement)
-    var newZip = new JSZip();
-    var mimetypeData = await zip.file('mimetype').async('uint8array');
-    newZip.file('mimetype', mimetypeData, { compression: 'STORE' });
+            let result;
+            if (cents === 0) {
+                result = dollarsWords ? `${dollarsWords} and 00/100` : "0/100";
+            } else {
+                result = dollarsWords ? `${dollarsWords} and ${cents.toString().padStart(2, '0')}/100` : `${cents.toString().padStart(2, '0')}/100`;
+            }
 
-    var filenames = Object.keys(zip.files);
-    for (var j = 0; j < filenames.length; j++) {
-      var fname = filenames[j];
-      if (fname === 'mimetype') continue;
-      var fdata = await zip.file(fname).async('uint8array');
-      if (fname === 'content.xml') {
-        newZip.file(fname, contentXml);
-      } else {
-        newZip.file(fname, fdata);
-      }
-    }
+            return result.trim();
+        }
 
-    generatedBlob = await newZip.generateAsync({ type: 'blob' });
-    formView.style.display = 'none'; successView.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (err) {
-    errorBox.textContent = 'Error: ' + err.message; errorBox.style.display = 'flex'; console.error(err);
-  } finally {
-    generateBtn.disabled = false; generateBtn.textContent = 'Generate & Download';
-  }
-});
+        function validateDate(dateStr) {
+            const datePattern = /^(\d{2})-([A-Za-z]{3})-(\d{4})$/;
+            if (!datePattern.test(dateStr)) return false;
 
-downloadBtn.addEventListener('click', function() {
-  if (!generatedBlob) return;
-  if (generatedUrl) URL.revokeObjectURL(generatedUrl);
-  generatedUrl = URL.createObjectURL(generatedBlob);
-  var a = document.createElement('a');
-  a.href = generatedUrl;
-  a.download = 'cheque-' + payeeInput.value.replace(/\s+/g, '-').toLowerCase() + '.ods';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-});
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const match = dateStr.match(datePattern);
+            const day = parseInt(match[1]);
+            const monthAbbr = match[2];
+            const year = parseInt(match[3]);
 
-resetBtn.addEventListener('click', function() {
-  payeeInput.value = ''; dateInput.value = ''; amountInput.value = '';
-  writtenPreview.textContent = 'Enter an amount above to preview…'; writtenPreview.classList.remove('filled');
-  if (generatedUrl) { URL.revokeObjectURL(generatedUrl); generatedUrl = null; }
-  generatedBlob = null;
-  formView.style.display = 'block'; successView.style.display = 'none'; errorBox.style.display = 'none';
-  payeeInput.focus();
-});
-</script>
+            if (year < 1900 || year > 2100) return false;
+            if (!months.map(m => m.toLowerCase()).includes(monthAbbr.toLowerCase())) return false;
+            if (day < 1 || day > 31) return false;
+
+            return true;
+        }
+
+        function validateName(name) {
+            const namePattern = /^[A-Za-z]+ [A-Za-z]+$/;
+            return namePattern.test(name);
+        }
+
+        function validateAmount(amount) {
+            const amountPattern = /^\d+(\.\d{1,2})?$/;
+            if (!amountPattern.test(amount)) return false;
+            const numericAmount = parseFloat(amount);
+            return numericAmount >= 0 && numericAmount < 1000000000;
+        }
+
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function clearError(input, errorElement) {
+            input.classList.remove('error');
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+
+        function showSuccess(blob, writtenAmount) {
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.download = 'Cory_6Aug20262_updated.sdo';
+            document.getElementById('generatedAmount').textContent = writtenAmount;
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('updateForm').style.display = 'none';
+        }
+
+        async function processFile(dateStr, name, amount) {
+            const binaryString = atob(TEMPLATE_B64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+
+            const zip = new JSZip();
+            await zip.loadAsync(bytes);
+
+            let contentXml = await zip.file('content.xml').async('string');
+
+            // Replace fields
+            contentXml = contentXml.replace(/\*\* FIELD1 \*\*/g, dateStr);
+            contentXml = contentXml.replace(/\bFIELD2\b/g, name);
+            contentXml = contentXml.replace(/\$ FIELD3\s*(?:<[^>]*)?\s*\*\*/g, `$${parseFloat(amount).toFixed(2)}`);
+            
+            const writtenAmount = amountInWords(parseFloat(amount));
+            contentXml = contentXml.replace(/\*\* FIELD4 \*\*/g, writtenAmount);
+
+            zip.file('content.xml', contentXml);
+
+            const blob = await zip.generateAsync({ type: 'blob' });
+            return { blob, writtenAmount };
+        }
+
+        const form = document.getElementById('updateForm');
+        const dateInput = document.getElementById('date');
+        const nameInput = document.getElementById('name');
+        const amountInput = document.getElementById('amount');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        const resetBtn = document.getElementById('resetBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let isValid = true;
+
+            const dateError = document.getElementById('dateError');
+            if (!validateDate(dateInput.value)) {
+                showError(dateInput, dateError, '❌ Please use DD-MMM-YYYY format (e.g., 06-Aug-2026)');
+                isValid = false;
+            } else {
+                clearError(dateInput, dateError);
+            }
+
+            const nameError = document.getElementById('nameError');
+            if (!validateName(nameInput.value)) {
+                showError(nameInput, nameError, '❌ Please enter name in "First Last" format');
+                isValid = false;
+            } else {
+                clearError(nameInput, nameError);
+            }
+
+            const amountError = document.getElementById('amountError');
+            if (!validateAmount(amountInput.value)) {
+                showError(amountInput, amountError, '❌ Please enter a valid numeric amount (e.g., 8000.00)');
+                isValid = false;
+            } else {
+                clearError(amountInput, amountError);
+            }
+
+            if (!isValid) return;
+
+            submitBtn.disabled = true;
+            btnText.textContent = 'Processing...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                const { blob, writtenAmount } = await processFile(dateInput.value, nameInput.value, amountInput.value);
+                showSuccess(blob, writtenAmount);
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'Update File';
+                spinner.style.display = 'none';
+            }
+        });
+
+        dateInput.addEventListener('input', () => clearError(dateInput, document.getElementById('dateError')));
+        nameInput.addEventListener('input', () => clearError(nameInput, document.getElementById('nameError')));
+        amountInput.addEventListener('input', () => clearError(amountInput, document.getElementById('amountError')));
+
+        resetBtn.addEventListener('click', () => {
+            form.reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('updateForm').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
