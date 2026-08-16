@@ -146,6 +146,16 @@
                 .replace(/'/g, '&apos;');
         }
 
+        function formatWithCommas(str) {
+            const numStr = str.toString().replace(/,/g, '');
+            const parts = numStr.split('.');
+            const intPart = parts[0];
+            const decPart = parts[1] || '00';
+            
+            const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return formatted + '.' + decPart.substring(0, 2);
+        }
+
         const validMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
         function validateDate(d) {
@@ -291,7 +301,8 @@
 
                 const escapedPayee = escapeXml(payeeInput.value);
                 const escapedDate = escapeXml(dateInput.value);
-                const escapedAmount = escapeXml(amountInput.value.replace(/,/g, ''));
+                const amountWithCommas = formatWithCommas(amountInput.value);
+                const escapedAmount = escapeXml(amountWithCommas);
                 const escapedWritten = escapeXml(writtenPreview.textContent);
 
                 // Keep the ** markers in the output
