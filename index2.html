@@ -3,344 +3,440 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cheque Draft Updater</title>
+<title>SDO Cheque Updater</title>
 <style>
-* { box-sizing: border-box; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --text: #111827;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --error: #dc2626;
+  --error-bg: #fef2f2;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 1rem;
+  padding: 3rem 1rem;
 }
-.container {
-  max-width: 600px;
+
+.wrap {
   width: 100%;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 560px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   padding: 2rem;
+  margin-bottom: 1.5rem;
 }
-.header { text-align: center; margin-bottom: 2rem; }
-.icon { font-size: 3rem; margin-bottom: 1rem; }
-h1 { margin: 0; color: #333; }
-.subtitle { color: #666; margin-top: 0.5rem; }
-.form-group { margin-bottom: 1.5rem; }
-label { display: block; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
-input {
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.field input[type="text"] {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: border-color 0.3s;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  color: var(--text);
 }
-input:focus {
+
+.field input[type="text"]::placeholder {
+  color: #9ca3af;
+}
+
+.field input[type="text"]:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
 }
-input:disabled { background: #f5f5f5; cursor: not-allowed; }
-.hint { font-size: 0.85rem; color: #999; margin-top: 0.25rem; }
-.preview-box {
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hint::before {
+  content: "ℹ";
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.preview {
+  padding: 0.875rem 1rem;
+  background: #f9fafb;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
   min-height: 3rem;
   display: flex;
   align-items: center;
   font-style: italic;
-  color: #999;
+  color: #9ca3af;
+  transition: all 0.2s;
 }
-.preview-box.filled {
+
+.preview.filled {
   font-style: normal;
-  color: #333;
-  background: #fffbf0;
-  border-left: 4px solid #667eea;
+  color: var(--text);
+  background: #fffbeb;
+  border-style: solid;
+  border-color: #f59e0b;
+  border-left-width: 4px;
 }
-.error {
-  color: #d32f2f;
-  padding: 0.75rem;
-  background: #ffebee;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+
+.alert {
+  display: none;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
   font-size: 0.9rem;
+  margin-bottom: 1.25rem;
 }
-button {
+
+.alert.error {
+  display: flex;
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid #fecaca;
+}
+
+.btn {
   width: 100%;
-  padding: 1rem;
+  padding: 0.875rem;
   font-size: 1rem;
   font-weight: 600;
+  font-family: inherit;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-}
-.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-.success-box {
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
   border-radius: 8px;
-  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
 }
-.success-icon { font-size: 3rem; margin-bottom: 1rem; }
-.success-box h2 { margin: 1rem 0; color: #2e7d32; }
-.success-box p { color: #388e3c; margin: 0.5rem 0; }
-.button-group { display: flex; gap: 1rem; }
-.button-group button { flex: 1; }
-.btn-secondary { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
-.btn-secondary:hover { background: #e0e0e0; }
-.loading { opacity: 0.6; }
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+}
+
+.success-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: var(--success-bg);
+  border: 1px solid #a7f3d0;
+}
+
+.success-card .icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.success-card h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: 0.4rem;
+}
+
+.success-card p {
+  color: #10b981;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.actions .btn {
+  flex: 1;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+@media (max-width: 480px) {
+  body { padding: 1.5rem 1rem; }
+  .card { padding: 1.5rem; }
+  header h1 { font-size: 1.4rem; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="icon">🏦</div>
-    <h1>Cheque Draft Updater</h1>
-    <p class="subtitle">Fill in the fields below — the written amount is auto-generated</p>
-  </div>
+<div class="wrap">
+  <header>
+    <h1>SDO Cheque Updater</h1>
+    <p>Fill in the three fields below — the written amount is generated for you.</p>
+  </header>
 
   <div id="formView">
-    <div class="form-group">
-      <label for="payee">FIELD 1: Payee Name</label>
-      <input type="text" id="payee" placeholder="Format: First Last · e.g. Jane Smith">
-      <div class="hint">Please enter a name in "First Last" format.</div>
+    <div class="card">
+      <div class="field">
+        <label for="payee">FIELD 1 — Payee Name</label>
+        <input type="text" id="payee" placeholder="Format: First Last  ·  e.g. Jane Smith" autocomplete="off">
+        <div class="hint">Please enter a name in "First Last" format.</div>
+      </div>
+
+      <div class="field">
+        <label for="date">FIELD 2 — Date</label>
+        <input type="text" id="date" placeholder="Format: DD-MMM-YYYY  ·  e.g. 06-Aug-2026" autocomplete="off">
+        <div class="hint">Please enter a valid date in DD-MMM-YYYY format.</div>
+      </div>
+
+      <div class="field">
+        <label for="amount">FIELD 3 — Amount</label>
+        <input type="text" id="amount" placeholder="Numeric value  ·  e.g. 8523.45 or 8,523.45" autocomplete="off">
+        <div class="hint">Please enter a valid positive amount (up to 999,999,999.99).</div>
+      </div>
+
+      <div class="field">
+        <label>FIELD 4 — Written Amount <span style="font-weight:400;color:var(--accent);">Auto-Generated</span></label>
+        <div class="preview" id="writtenAmountPreview">Enter an amount above to preview…</div>
+        <div class="hint">Bank cheque format · auto-filled from FIELD 3</div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="date">FIELD 2: Date</label>
-      <input type="text" id="date" placeholder="Format: DD-MMM-YYYY · e.g. 06-Aug-2026">
-      <div class="hint">Please enter a valid date in DD-MMM-YYYY format.</div>
-    </div>
+    <div id="errorBox" class="alert error"></div>
 
-    <div class="form-group">
-      <label for="amount">FIELD 3: Amount</label>
-      <input type="text" id="amount" placeholder="Numeric value · e.g. 8523.45 or 8,523.45">
-      <div class="hint">Please enter a valid positive amount (up to 999,999,999.99).</div>
-    </div>
-
-    <div class="form-group">
-      <label>FIELD 4: Written Amount</label>
-      <div class="preview-box" id="writtenAmountPreview">Enter an amount above to preview…</div>
-      <div class="hint">Bank cheque format · auto-filled from FIELD 3</div>
-    </div>
-
-    <div id="errorBox" class="error" style="display: none;"></div>
-
-    <button class="btn-primary" id="generateBtn">Generate & Download</button>
+    <button class="btn btn-primary" id="generateBtn">Generate &amp; Download</button>
   </div>
 
-  <div id="successView" style="display: none;">
-    <div class="success-box">
-      <div class="success-icon">✅</div>
+  <div id="successView" style="display:none;">
+    <div class="card success-card">
+      <div class="icon">✅</div>
       <h2>File Ready!</h2>
       <p>Your cheque draft has been updated and is ready to download.</p>
-    </div>
-    <div class="button-group">
-      <button class="btn-primary" id="downloadBtn">⬇ Download Updated File</button>
-      <button class="btn-secondary" id="resetBtn">Update Another Cheque</button>
+      <div class="actions">
+        <button class="btn btn-primary" id="downloadBtn">⬇ Download</button>
+        <button class="btn btn-secondary" id="resetBtn">Update Another</button>
+      </div>
     </div>
   </div>
+
+  <footer>Runs entirely in your browser. No data is sent to any server.</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-const TEMPLATE_B64 = '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';
-
-function escapeXml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
-
-const validMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const TEMPLATE_B64 = "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";
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function validateDate(d) {
   const p = d.split('-');
-  if (p.length !== 3) return false;
-  if (p[0].length !== 2 || !/^\d{2}$/.test(p[0])) return false;
-  if (p[1].length !== 3 || !validMonths.includes(p[1].toLowerCase())) return false;
-  if (p[2].length !== 4 || !/^\d{4}$/.test(p[2])) return false;
+  if (p.length !== 3 || p[0].length !== 2 || p[1].length !== 3 || p[2].length !== 4) return false;
+  const day = parseInt(p[0], 10), month = p[1], year = parseInt(p[2], 10);
+  if (!MONTHS.includes(month)) return false;
+  if (isNaN(day) || day < 1 || day > 31) return false;
+  if (isNaN(year) || year < 1900 || year > 2100) return false;
   return true;
 }
-
-function validatePayee(p) {
-  return p.trim().split(' ').length >= 2;
-}
-
+function validatePayee(p) { return p.trim().split(/\s+/).length >= 2; }
 function validateAmount(a) {
   const num = parseFloat(a.replace(/,/g, ''));
   return !isNaN(num) && num > 0 && num < 1000000000;
 }
+function escapeXml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 const numberToWords = (num) => {
-  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-  const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-  const scales = ['', 'Thousand', 'Million', 'Billion'];
-
+  const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'];
+  const teens = ['Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const scales = ['','Thousand','Million','Billion'];
   const convertGroup = (n) => {
-    let result = '';
-    const h = Math.floor(n / 100);
-    const t = Math.floor((n % 100) / 10);
-    const o = n % 10;
-
-    if (h > 0) result += ones[h] + ' Hundred ';
-    if (t >= 2) result += tens[t] + (o > 0 ? ' ' + ones[o] : '');
-    else if (t === 1) result += teens[o];
-    else if (o > 0) result += ones[o];
-
-    return result.trim();
+    let r = '';
+    const h = Math.floor(n/100), t = Math.floor((n%100)/10), o = n%10;
+    if (h > 0) r += ones[h] + ' Hundred ';
+    if (t >= 2) r += tens[t] + (o > 0 ? ' ' + ones[o] : '');
+    else if (t === 1) r += teens[o];
+    else if (o > 0) r += ones[o];
+    return r.trim();
   };
-
   const intPart = Math.floor(num);
-  const intStr = intPart.toString().padStart(1, '0');
+  const intStr = intPart.toString();
   const groups = [];
-  for (let i = intStr.length; i > 0; i -= 3) {
-    groups.unshift(intStr.slice(Math.max(0, i - 3), i));
-  }
-
-  let words = groups
-    .map((group, idx) => {
-      const groupNum = parseInt(group);
-      if (groupNum === 0) return '';
-      return convertGroup(groupNum) + (scales[groups.length - idx - 1] ? ' ' + scales[groups.length - idx - 1] : '');
-    })
-    .filter(Boolean)
-    .join(' ');
-
+  for (let i = intStr.length; i > 0; i -= 3) groups.unshift(intStr.slice(Math.max(0, i-3), i));
+  let words = groups.map((g, i) => {
+    const gn = parseInt(g, 10);
+    if (gn === 0) return '';
+    return convertGroup(gn) + (scales[groups.length - i - 1] ? ' ' + scales[groups.length - i - 1] : '');
+  }).filter(Boolean).join(' ');
   const cents = Math.round((num % 1) * 100);
-  if (cents > 0) {
-    words += ' Dollars And ' + convertGroup(cents) + ' Cents';
-  } else {
-    words += ' Dollars';
-  }
-
+  if (cents > 0) words += (intPart === 1 ? ' Dollar And ' : ' Dollars And ') + convertGroup(cents) + ' Cents';
+  else words += (intPart === 1 ? ' Dollar' : ' Dollars');
   return words;
 };
 
-const payeeInput = document.getElementById('payee');
-const dateInput = document.getElementById('date');
-const amountInput = document.getElementById('amount');
-const writtenAmountPreview = document.getElementById('writtenAmountPreview');
-const generateBtn = document.getElementById('generateBtn');
-const errorBox = document.getElementById('errorBox');
-const formView = document.getElementById('formView');
-const successView = document.getElementById('successView');
-const downloadBtn = document.getElementById('downloadBtn');
-const resetBtn = document.getElementById('resetBtn');
-
-let generatedBlob = null;
+const $ = id => document.getElementById(id);
+const payeeInput = $('payee'), dateInput = $('date'), amountInput = $('amount');
+const writtenPreview = $('writtenAmountPreview');
+const generateBtn = $('generateBtn'), errorBox = $('errorBox');
+const formView = $('formView'), successView = $('successView');
+const downloadBtn = $('downloadBtn'), resetBtn = $('resetBtn');
+let generatedBlob = null, generatedUrl = null;
 
 amountInput.addEventListener('input', () => {
   if (validateAmount(amountInput.value)) {
-    const num = parseFloat(amountInput.value.replace(/,/g, ''));
-    const written = numberToWords(num);
-    writtenAmountPreview.textContent = written;
-    writtenAmountPreview.classList.add('filled');
+    writtenPreview.textContent = numberToWords(parseFloat(amountInput.value.replace(/,/g, '')));
+    writtenPreview.classList.add('filled');
   } else {
-    writtenAmountPreview.textContent = 'Enter an amount above to preview…';
-    writtenAmountPreview.classList.remove('filled');
+    writtenPreview.textContent = 'Enter an amount above to preview…';
+    writtenPreview.classList.remove('filled');
   }
 });
 
 generateBtn.addEventListener('click', async () => {
-  errorBox.style.display = 'none';
-  errorBox.textContent = '';
+  errorBox.style.display = 'none'; errorBox.textContent = '';
+  if (!validatePayee(payeeInput.value)) { errorBox.textContent = 'Payee: Enter first and last name'; errorBox.style.display = 'flex'; return; }
+  if (!validateDate(dateInput.value)) { errorBox.textContent = 'Date: Use DD-MMM-YYYY format (e.g. 06-Aug-2026)'; errorBox.style.display = 'flex'; return; }
+  if (!validateAmount(amountInput.value)) { errorBox.textContent = 'Amount: Enter a valid positive number'; errorBox.style.display = 'flex'; return; }
 
-  if (!validatePayee(payeeInput.value)) {
-    errorBox.textContent = 'Payee: Enter first and last name';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if (!validateDate(dateInput.value)) {
-    errorBox.textContent = 'Date: Use DD-MMM-YYYY format with valid month (e.g. 06-Aug-2026)';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if (!validateAmount(amountInput.value)) {
-    errorBox.textContent = 'Amount: Enter a valid positive number';
-    errorBox.style.display = 'block';
-    return;
-  }
-
-  generateBtn.disabled = true;
-  generateBtn.classList.add('loading');
-  generateBtn.textContent = 'Processing...';
-
+  generateBtn.disabled = true; generateBtn.textContent = 'Processing…';
   try {
     const binaryString = atob(TEMPLATE_B64);
     const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
+    for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
 
     const zip = new JSZip();
     await zip.loadAsync(bytes);
 
     let contentXml = await zip.file('content.xml').async('string');
+    contentXml = contentXml.replace(/\*\*FIELD1\*\*/g, escapeXml(payeeInput.value.trim()));
+    contentXml = contentXml.replace(/\*\*FIELD2\*\*/g, escapeXml(dateInput.value.trim()));
+    contentXml = contentXml.replace(/\*\*FIELD3\*\*/g, escapeXml(amountInput.value.replace(/,/g, '').trim()));
+    contentXml = contentXml.replace(/\*\*FIELD4\*\*/g, escapeXml(writtenPreview.textContent.trim()));
 
-    const escapedPayee = escapeXml(payeeInput.value);
-    const escapedDate = escapeXml(dateInput.value);
-    const escapedAmount = escapeXml(amountInput.value.replace(/,/g, ''));
-    const escapedWritten = escapeXml(writtenAmountPreview.textContent);
+    // Rebuild ZIP with mimetype FIRST and STORED (uncompressed) — required by ODS spec
+    const newZip = new JSZip();
+    const mimetypeData = await zip.file('mimetype').async('string');
+    newZip.file('mimetype', mimetypeData, { compression: 'STORE' });
 
-    contentXml = contentXml.split('** FIELD1 **').join(escapedPayee);
-    contentXml = contentXml.split('>FIELD2<').join('>' + escapedDate + '<');
-    contentXml = contentXml.split('$ FIELD3 <text:s/>**').join('$' + escapedAmount + ' **');
-    contentXml = contentXml.split('** FIELD4 **').join(escapedWritten);
+    for (const filename of Object.keys(zip.files)) {
+      if (filename === 'mimetype') continue;
+      const fileData = await zip.file(filename).async('uint8array');
+      if (filename === 'content.xml') {
+        newZip.file(filename, contentXml);
+      } else {
+        newZip.file(filename, fileData);
+      }
+    }
 
-    zip.file('content.xml', contentXml);
-
-    generatedBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
-
-    formView.style.display = 'none';
-    successView.style.display = 'block';
+    generatedBlob = await newZip.generateAsync({ type: 'blob' });
+    formView.style.display = 'none'; successView.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (err) {
-    errorBox.textContent = 'Error: ' + err.message;
-    errorBox.style.display = 'block';
-    console.error(err);
+    errorBox.textContent = 'Error: ' + err.message; errorBox.style.display = 'flex'; console.error(err);
   } finally {
-    generateBtn.disabled = false;
-    generateBtn.classList.remove('loading');
-    generateBtn.textContent = 'Generate & Download';
+    generateBtn.disabled = false; generateBtn.textContent = 'Generate & Download';
   }
 });
 
 downloadBtn.addEventListener('click', () => {
-  if (generatedBlob) {
-    const url = URL.createObjectURL(generatedBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cheque-' + payeeInput.value.replace(/\s+/g, '-').toLowerCase() + '.ods';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  if (!generatedBlob) return;
+  if (generatedUrl) URL.revokeObjectURL(generatedUrl);
+  generatedUrl = URL.createObjectURL(generatedBlob);
+  const a = document.createElement('a');
+  a.href = generatedUrl;
+  a.download = 'cheque-' + payeeInput.value.replace(/\s+/g, '-').toLowerCase() + '.ods';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
 });
 
 resetBtn.addEventListener('click', () => {
-  payeeInput.value = '';
-  dateInput.value = '';
-  amountInput.value = '';
-  writtenAmountPreview.textContent = 'Enter an amount above to preview…';
-  writtenAmountPreview.classList.remove('filled');
+  payeeInput.value = ''; dateInput.value = ''; amountInput.value = '';
+  writtenPreview.textContent = 'Enter an amount above to preview…'; writtenPreview.classList.remove('filled');
+  if (generatedUrl) { URL.revokeObjectURL(generatedUrl); generatedUrl = null; }
   generatedBlob = null;
-  formView.style.display = 'block';
-  successView.style.display = 'none';
-  errorBox.style.display = 'none';
+  formView.style.display = 'block'; successView.style.display = 'none'; errorBox.style.display = 'none';
+  payeeInput.focus();
 });
 </script>
 </body>
